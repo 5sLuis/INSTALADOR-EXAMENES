@@ -1,24 +1,22 @@
 @echo off
 
-set URLFILE=%TEMP%\config.txt
+set APPDIR=C:\ProgramData\Examenes
 
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/5sLuis/INSTALADOR-EXAMENES/main/config.txt' -OutFile '%URLFILE%'"
+if not exist "%APPDIR%" mkdir "%APPDIR%"
 
-set /p URL=<"%URLFILE%"
+powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/5sLuis/INSTALADOR-EXAMENES/main/lanzar.bat' -OutFile '%APPDIR%\lanzar.bat'"
 
 set DESKTOP=%USERPROFILE%\Desktop
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") > "%TEMP%\crear.vbs"
 echo sLinkFile = "%DESKTOP%\EXAMEN SUSPENSO.lnk" >> "%TEMP%\crear.vbs"
 echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%TEMP%\crear.vbs"
-echo oLink.TargetPath = "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe" >> "%TEMP%\crear.vbs"
-echo oLink.Arguments = "--kiosk %URL%" >> "%TEMP%\crear.vbs"
+echo oLink.TargetPath = "%APPDIR%\lanzar.bat" >> "%TEMP%\crear.vbs"
+echo oLink.WorkingDirectory = "%APPDIR%" >> "%TEMP%\crear.vbs"
 echo oLink.Save >> "%TEMP%\crear.vbs"
 
 cscript //nologo "%TEMP%\crear.vbs"
-
 del "%TEMP%\crear.vbs"
-del "%URLFILE%"
 
-echo Acceso directo creado correctamente.
+echo Instalacion completada.
 pause
